@@ -4,8 +4,8 @@ import time
 from typing import Any
 
 from PIL import Image, UnidentifiedImageError
-from webgym.misc import is_white_image
 
+from environment.webgym.webgym.misc import is_white_image
 from src.schemas.omnibox import OmniboxInstance
 from src.webgym.client import MasterClient
 from src.webgym.error import OmniboxBusyError, OmniboxInvalidScreenshotError

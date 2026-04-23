@@ -4,8 +4,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Dict
 
-from webgym.environment.process_isolator import ProcessBasedHttpStack
-
+from environment.webgym.webgym.environment.process_isolator import ProcessBasedHttpStack
 from src.config import WebGymConfig
 from src.schemas.computer_action import ActionType
 from src.schemas.omnibox import OmniboxInstance
