@@ -1,0 +1,4 @@
+[submodule "environment/webgym"]
+	path = environment/webgym
+	url = https://github.com/Goonco/webgym
+	branch = main
