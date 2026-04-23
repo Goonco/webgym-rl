@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Counter Task</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #f5f5f5;
+        color: #111;
+      }
+
+      main {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+      }
+
+      .card {
+        width: min(420px, calc(100vw - 32px));
+        padding: 32px;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 32px;
+      }
+
+      p {
+        margin: 0 0 20px;
+        color: #555;
+      }
+
+      #count {
+        margin: 0 0 24px;
+        font-size: 72px;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+      }
+
+      button {
+        width: 96px;
+        height: 96px;
+        border: 0;
+        border-radius: 16px;
+        font-size: 48px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      #decrement {
+        background: #e5e7eb;
+        color: #111;
+      }
+
+      #increment {
+        background: #111827;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card" aria-labelledby="task-title">
+        <h1 id="task-title">Counter</h1>
+        <p>Use the buttons to make the counter value 5.</p>
+        <div id="count" aria-live="polite">0</div>
+        <div class="controls">
+          <button id="decrement" type="button" aria-label="decrease counter">-</button>
+          <button id="increment" type="button" aria-label="increase counter">+</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const countEl = document.getElementById("count");
+      const decrementButton = document.getElementById("decrement");
+      const incrementButton = document.getElementById("increment");
+
+      let count = 0;
+
+      const render = () => {
+        countEl.textContent = String(count);
+      };
+
+      decrementButton.addEventListener("click", () => {
+        count -= 1;
+        render();
+      });
+
+      incrementButton.addEventListener("click", () => {
+        count += 1;
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>
