@@ -1,7 +1,8 @@
 from typing import Annotated, Any, Literal, Union
 
 from pydantic import BaseModel, Field, TypeAdapter
-from rl_env_gateway.schemas.computer_action import ComputerAction
+
+from src.schemas.computer_action import ComputerAction
 
 
 class BaseEnvRequest(BaseModel):
