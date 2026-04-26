@@ -9,7 +9,7 @@
     "in_flight_timeout": 5.0,
     "deadline_margin": 2.0
   },
-  "task_file_path": "fixtures/task/counter.json",
+  "task_file_path": "tests/fixtures/task/counter.json",
   "webgym": {
     "omnibox_host": "127.0.0.1",
     "omnibox_port": 5500,

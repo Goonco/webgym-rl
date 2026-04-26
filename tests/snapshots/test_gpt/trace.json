@@ -1,0 +1,66 @@
+[
+  {
+    "payload": {
+      "include_a11y": true,
+      "op": "start",
+      "session_id": "<session_id>",
+      "task_id": "counter-test"
+    },
+    "response": {
+      "image": {
+        "data": "<redacted:25008 chars>",
+        "mimeType": "image/png"
+      },
+      "session_id": "<session_id>",
+      "status": "ok",
+      "task_id": "counter-test",
+      "text": "tag: button, role: button, text: decrease counter, coords: (584, 475)\ntag: button, role: button, text: increase counter, coords: (696, 475)"
+    },
+    "step": 1,
+    "tool": "webgym_start"
+  },
+  {
+    "payload": {
+      "actions": [
+        {
+          "action_type": "CLICK",
+          "button": "left",
+          "num_clicks": 5,
+          "x": 696,
+          "y": 475
+        }
+      ],
+      "include_a11y": true,
+      "op": "action",
+      "session_id": "<session_id>",
+      "task_id": "counter-test"
+    },
+    "response": {
+      "image": {
+        "data": "<redacted:24740 chars>",
+        "mimeType": "image/png"
+      },
+      "session_id": "<session_id>",
+      "status": "ok",
+      "task_id": "counter-test",
+      "text": "tag: button, role: button, text: decrease counter, coords: (584, 475)\ntag: button, role: button, text: increase counter, coords: (696, 475)"
+    },
+    "step": 2,
+    "tool": "webgym_action"
+  },
+  {
+    "payload": {
+      "op": "reward",
+      "session_id": "<session_id>",
+      "task_id": "counter-test"
+    },
+    "response": {
+      "reward": 0.0,
+      "session_id": "<session_id>",
+      "status": "ok",
+      "task_id": "counter-test"
+    },
+    "step": 3,
+    "tool": "webgym_reward"
+  }
+]

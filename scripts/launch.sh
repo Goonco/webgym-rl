@@ -47,34 +47,16 @@ logstep() {
 
 trap cleanup EXIT INT TERM
 
-logstep "[1/4] launching webgym-rl server"
-bash "$SCRIPT_DIR/start/webgym_rl_start.bash" &
+logstep "[1/2] launching webgym-rl server"
+bash "$SCRIPT_DIR/launch/webgym_rl_launch.bash" &
 PIDS+=("$!")
 wait_for_http \
   "gateway" \
   "curl -fsS http://127.0.0.1:${PORT_GATEWAY}/health"
 
-logstep "[2/4] launching omnibox"
-bash "$SCRIPT_DIR/start/omnibox_start.bash" &
+logstep "[2/2] launching omnibox"
+bash "$SCRIPT_DIR/launch/omnibox_launch.bash" &
 PIDS+=("$!")
 wait_for_http \
   "omnibox" \
   "curl -fsS -H \"x-api-key: default_key\" http://127.0.0.1:${PORT_OMNIBOX_MASTER}/info"
-
-logstep "[3/4] launching fixture website"
-bash "$SCRIPT_DIR/start/fixture_start.bash" &
-PIDS+=("$!")
-wait_for_http \
-  "fixture website" \
-  "curl -fsS http://127.0.0.1:${PORT_FIXTURE_WEBSITE}/counter.html"
-
-logstep "[4/4] running health check"
-bash "$SCRIPT_DIR/health_check.bash"
-
-echo "Start Testing"
-
-logstep "[1/2] checking handle start"
-python "$TEST_DIR/test_handle_start.py"
-
-logstep "[2/2] checking handle action and reward"
-python "$TEST_DIR/test_handle_action_and_reward.py"

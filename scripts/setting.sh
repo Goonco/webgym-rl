@@ -2,8 +2,8 @@
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-readonly FIXTURE_DIR="$ROOT_DIR/fixtures"
 readonly TEST_DIR="$ROOT_DIR/tests"
+readonly FIXTURE_DIR="$TEST_DIR/fixtures"
 
 readonly LOG_DIR="${LOG_DIR:-$ROOT_DIR/logs}"
 readonly LOG_FILE="${LOG_FILE:-$LOG_DIR/e2e_$(date +%Y%m%d_%H%M%S).log}"

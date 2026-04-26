@@ -1,0 +1,15 @@
+{
+  "actions": [
+    {
+      "action_type": "CLICK",
+      "button": "left",
+      "num_clicks": 5,
+      "x": 696,
+      "y": 475
+    }
+  ],
+  "include_a11y": true,
+  "op": "action",
+  "session_id": "<session_id>",
+  "task_id": "counter-test"
+}
