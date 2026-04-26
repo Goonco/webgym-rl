@@ -84,7 +84,7 @@ uvicorn==0.46.0
 uvloop==0.22.1
 watchfiles==1.1.1
 wcwidth==0.6.0
--e git+https://github.com/Goonco/webgym@91c28745c20c0c216110c304fa61b2d0156c1b88#egg=webgym&subdirectory=../../../environment/webgym
 websockets==16.0
 Werkzeug==3.1.8
 widgetsnbextension==4.0.15
+-e ./environment/webgym[omnibox]
