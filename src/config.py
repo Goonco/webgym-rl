@@ -29,23 +29,23 @@ class OperationConfig:
 class HttpStackConfig:
     allocate: OperationConfig
     release: OperationConfig
-    metadata: OperationConfig
     navigate: OperationConfig
     screenshot: OperationConfig
-    ac_tree: OperationConfig
-    page_metadata: OperationConfig
     execute: OperationConfig
+    # metadata: OperationConfig
+    # ac_tree: OperationConfig
+    # page_metadata: OperationConfig
 
     def get_pool_dit(self) -> dict[str, int]:
         return {
             "allocate": self.allocate.pool_size,
             "release": self.release.pool_size,
-            "metadata": self.metadata.pool_size,
             "navigate": self.navigate.pool_size,
             "screenshot": self.screenshot.pool_size,
-            "ac_tree": self.ac_tree.pool_size,
-            "page_metadata": self.page_metadata.pool_size,
             "execute": self.execute.pool_size,
+            "metadata": 0,
+            "ac_tree": 0,
+            "page_metadata": 0,
         }
 
 
@@ -114,12 +114,12 @@ def load_config(path: Path) -> Config:
                 httpstack_config=HttpStackConfig(
                     allocate=operation_config("allocate"),
                     release=operation_config("release"),
-                    metadata=operation_config("metadata"),
                     navigate=operation_config("navigate"),
                     screenshot=operation_config("screenshot"),
-                    ac_tree=operation_config("ac_tree"),
-                    page_metadata=operation_config("page_metadata"),
                     execute=operation_config("execute"),
+                    # metadata=operation_config("metadata"),
+                    # ac_tree=operation_config("ac_tree"),
+                    # page_metadata=operation_config("page_metadata"),
                 ),
             )
         elif env_type == EnvType.OS_WORLD:

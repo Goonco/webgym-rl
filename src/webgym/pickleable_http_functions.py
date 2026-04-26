@@ -147,7 +147,7 @@ def get_page_snapshot(
 def _format_interactive_regions(regions: dict[str, Any]) -> str:
     lines = []
 
-    for element_id, region in regions.items():
+    for _, region in regions.items():
         text = region.get("aria_name") or region.get("aria-name") or ""
         tag = region.get("tag_name", "")
         role = region.get("role", "")
@@ -156,6 +156,12 @@ def _format_interactive_regions(regions: dict[str, Any]) -> str:
         if not rects:
             continue
 
-        lines.append(f"id: {element_id}, text: {text}, tag: {tag}, role: {role}")
+        coords = []
+        for rect in rects:
+            x = int((rect.get("left", 0) + rect.get("right", 0)) / 2)
+            y = int((rect.get("top", 0) + rect.get("bottom", 0)) / 2)
+            coords.append(f"({x}, {y})")
+
+        lines.append(f"tag: {tag}, role: {role}, text: {text}, coords: {', '.join(coords)}")
 
     return "\n".join(lines)

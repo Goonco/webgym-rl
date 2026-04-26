@@ -1,5 +1,5 @@
 {
-    "task_id":"counter-5",
+    "task_id":"counter-test",
     "task_name":"Make the counter value 5.",
     "website":"http://127.0.0.1:8123/counter.html",
     "evaluation": {
