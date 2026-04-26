@@ -5,8 +5,8 @@
 ### Clone Repository
 
 ```bash
-git clone https://github.com/Goonco/webgym-rl
-cd webgym-r;
+git clone --recursive https://github.com/Goonco/webgym-rl
+cd webgym-rl;
 ```
 
 ### Setup Webgym Environment
@@ -16,17 +16,18 @@ conda create -n webgym-rl python=3.10
 conda activate webgym-rl
 
 pip install -U pip uv
-cd environment/webgym
-uv pip install -e ".[omnibox]"
+uv pip install -r requirements.txt
 
 playwright install chromium
+
 # Linux only
 playwright install-deps chromium
 
 # macOS
 brew install redis
 
-cd ../../
+# 확실치는 않음
+pip install redis
 ```
 
 ## Test And Run
@@ -34,7 +35,12 @@ cd ../../
 ### E2E Test
 
 ```bash
-bash scripts/e2e_test.sh
+bash scripts/tests/e2e_test.sh
+```
+
+```bash
+# requires api key in .env (OPENAI_API_KEY)
+bash scripts/tests/gpt_e2e_test.sh
 ```
 
 ## Default Ports
