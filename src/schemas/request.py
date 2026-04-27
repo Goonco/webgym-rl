@@ -1,26 +1,32 @@
-from typing import Annotated, Any, Literal, Union
+from typing import Annotated, Literal, Union
 
-from pydantic import BaseModel, Field, TypeAdapter
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.schemas.computer_action import ComputerAction
 
 
-class BaseEnvRequest(BaseModel):
+class _FrozenBaseModel(BaseModel):
+    model_config = ConfigDict(
+        frozen=True,
+    )
+
+
+class _BaseEnvRequest(_FrozenBaseModel):
     session_id: int
     task_id: str
     include_a11y: bool = False
 
 
-class StartRequest(BaseEnvRequest):
+class StartRequest(_BaseEnvRequest):
     op: Literal["start"]
 
 
-class ActionRequest(BaseEnvRequest):
+class ActionRequest(_BaseEnvRequest):
     op: Literal["action"]
     actions: list[ComputerAction] = Field(min_length=1)
 
 
-class RewardRequest(BaseEnvRequest):
+class RewardRequest(_BaseEnvRequest):
     op: Literal["reward"]
 
 
@@ -28,8 +34,3 @@ Request = Annotated[
     Union[StartRequest, ActionRequest, RewardRequest],
     Field(discriminator="op"),
 ]
-
-
-def parse_request_base(payload: dict[str, Any]) -> Request:
-    """Parse a raw protocol payload into the matching request model."""
-    return TypeAdapter(Request).validate_python(payload)

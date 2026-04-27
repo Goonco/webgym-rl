@@ -42,18 +42,21 @@ sudo apt-get install -y redis-server
 
 ## Run
 
-서버 실행을 위해선 Gateway와 Omnibox Server를 각각 실행해야함. 로그의 편의를 위해 각각 다른 터미널에서 수행하는 것을 추천
+서버 실행을 위해선 Gateway와 Omnibox Server를 각각 실행해야함. 로그의 편의를 위해 각각 다른 터미널에서 수행하는 것을 추천.
+`config.json` 을 수정하여 두 서버에 대한 조작 가능. `setting.sh` 수정 불필요!
 
 ```bash
-bash scripts/launch/omnibox_launch.bash
+bash omnibox_launch.bash
 ```
 
 ```bash
-bash scripts/launch/webgym_rl_launch.bash
+bash webgym_rl_launch.bash
 ```
 
 
 ## Test
+
+현재 테스트에 수정된 config 적용안됨. 사용 불가
 
 ### E2E Test Manual
 

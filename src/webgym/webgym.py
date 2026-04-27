@@ -5,8 +5,8 @@ from dataclasses import dataclass, field
 from typing import Dict
 
 from environment.webgym.webgym.environment.process_isolator import ProcessBasedHttpStack
-from src.config import WebGymConfig
 from src.schemas.computer_action import ActionType
+from src.schemas.config import HttpStackConfig, OmniboxConfig
 from src.schemas.omnibox import OmniboxInstance
 from src.schemas.request import ActionRequest, Request, RewardRequest, StartRequest
 from src.schemas.response import ActionResponse, ImagePayload, RewardResponse
@@ -60,15 +60,22 @@ class ReleaseJob:
 
 
 class WebGym:
-    def __init__(self, task_store: TaskStore, config: WebGymConfig) -> None:
+    def __init__(
+        self,
+        task_store: TaskStore,
+        httpstack_config: HttpStackConfig,
+        omnibox_config: OmniboxConfig,
+    ) -> None:
         self.task_store = task_store
 
         # wait_timeout and timeout (operation_timeout) is not used
         self.http_stack = ProcessBasedHttpStack(
-            pool_config=config.httpstack_config.get_pool_dit(),
+            pool_config=httpstack_config.get_pool_dict(),
         )
 
-        self.config = config
+        self.httpstack_config = httpstack_config
+        self.omnibox_config = omnibox_config
+
         self.session_map: dict[int, OmniboxInstance] = {}
         self.reward_cache: Dict[int, float] = {}
 
@@ -316,14 +323,14 @@ class WebGym:
         )
 
     def _release_once(self, instance: OmniboxInstance):
-        config = self.config
-        timeout = config.httpstack_config.release.timeout
+
+        timeout = self.httpstack_config.release.timeout
         deadline = RequestDeadline(time.monotonic() + timeout)
         return self.http_stack.single_execute(
             func=reset_instance,
-            host=config.omnibox_host,
-            port=config.omnibox_port,
-            api_key=config.omnibox_api_key,
+            host=self.omnibox_config.host,
+            port=self.omnibox_config.master_port,
+            api_key=self.omnibox_config.api_key,
             instance=instance,
             check_timeout=deadline.check,
             timeout=timeout,
@@ -440,16 +447,15 @@ class WebGym:
         deadline: RequestDeadline,
     ):
         deadline.check("_execute_browser_command")
-        config = self.config
         return self.http_stack.single_execute(
             func=execute_browser_command,
-            host=config.omnibox_host,
-            port=config.omnibox_port,
-            api_key=config.omnibox_api_key,
+            host=self.omnibox_config.host,
+            port=self.omnibox_config.master_port,
+            api_key=self.omnibox_config.api_key,
             instance=instance,
             command=command,
             check_timeout=deadline.check,
-            timeout=deadline.timeout(config.httpstack_config.execute.timeout),
+            timeout=deadline.timeout(self.httpstack_config.execute.timeout),
         )
 
     def _allocate_instance(self, deadline: RequestDeadline):
@@ -459,14 +465,13 @@ class WebGym:
             # TODO allocate 성공 이후 남은 거 할 시간 너무 없는경우에 대한 처리 필요
 
             try:
-                config = self.config
                 return self.http_stack.single_execute(
                     func=allocate_instance,
-                    host=config.omnibox_host,
-                    port=config.omnibox_port,
-                    api_key=config.omnibox_api_key,
+                    host=self.omnibox_config.host,
+                    port=self.omnibox_config.master_port,
+                    api_key=self.omnibox_config.api_key,
                     check_timeout=deadline.check,
-                    timeout=deadline.timeout(config.httpstack_config.allocate.timeout),
+                    timeout=deadline.timeout(self.httpstack_config.allocate.timeout),
                 )
 
             except Exception as exc:
@@ -484,16 +489,15 @@ class WebGym:
             deadline.check("_navigate")
 
             try:
-                config = self.config
                 return self.http_stack.single_execute(
                     func=navigate,
-                    host=config.omnibox_host,
-                    port=config.omnibox_port,
-                    api_key=config.omnibox_api_key,
+                    host=self.omnibox_config.host,
+                    port=self.omnibox_config.master_port,
+                    api_key=self.omnibox_config.api_key,
                     url=url,
                     instance=instance,
                     check_timeout=deadline.check,
-                    timeout=deadline.timeout(config.httpstack_config.navigate.timeout),
+                    timeout=deadline.timeout(self.httpstack_config.navigate.timeout),
                 )
             except Exception as exc:
                 if isinstance(exc, WebGymEnvRetryableError):
@@ -510,15 +514,14 @@ class WebGym:
             deadline.check("_screenshot")
 
             try:
-                config = self.config
                 return self.http_stack.single_execute(
                     func=screenshot,
-                    host=config.omnibox_host,
-                    port=config.omnibox_port,
-                    api_key=config.omnibox_api_key,
+                    host=self.omnibox_config.host,
+                    port=self.omnibox_config.master_port,
+                    api_key=self.omnibox_config.api_key,
                     instance=instance,
                     check_timeout=deadline.check,
-                    timeout=deadline.timeout(config.httpstack_config.screenshot.timeout),
+                    timeout=deadline.timeout(self.httpstack_config.screenshot.timeout),
                 )
 
             except Exception as exc:
@@ -536,15 +539,14 @@ class WebGym:
             deadline.check("_a11y_tree")
 
             try:
-                config = self.config
                 return self.http_stack.single_execute(
                     func=get_interactive_tree,
-                    host=config.omnibox_host,
-                    port=config.omnibox_port,
-                    api_key=config.omnibox_api_key,
+                    host=self.omnibox_config.host,
+                    port=self.omnibox_config.master_port,
+                    api_key=self.omnibox_config.api_key,
                     instance=instance,
                     check_timeout=deadline.check,
-                    timeout=deadline.timeout(config.httpstack_config.screenshot.timeout),
+                    timeout=deadline.timeout(self.httpstack_config.screenshot.timeout),
                 )
 
             except Exception as exc:
@@ -568,17 +570,16 @@ class WebGym:
             deadline.check("_page_snapshot")
 
             try:
-                config = self.config
                 return self.http_stack.single_execute(
                     func=get_page_snapshot,
-                    host=config.omnibox_host,
-                    port=config.omnibox_port,
-                    api_key=config.omnibox_api_key,
+                    host=self.omnibox_config.host,
+                    port=self.omnibox_config.master_port,
+                    api_key=self.omnibox_config.api_key,
                     instance=instance,
                     selectors=selectors,
                     include_html=include_html,
                     check_timeout=deadline.check,
-                    timeout=deadline.timeout(config.httpstack_config.execute.timeout),
+                    timeout=deadline.timeout(self.httpstack_config.execute.timeout),
                 )
 
             except Exception as exc:
