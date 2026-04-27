@@ -73,8 +73,8 @@ class Config:
     env_type: EnvType
     gateway: GatewayConfig
     task_file_path: Path
-    webgym: WebGymConfig | None
-    osworld: OSWorldConfig | None
+    webgym: WebGymConfig | None = None
+    osworld: OSWorldConfig | None = None
 
 
 def load_config(path: Path) -> Config:

@@ -1,6 +1,0 @@
-{
-  "include_a11y": true,
-  "op": "start",
-  "session_id": "<session_id>",
-  "task_id": "counter-test"
-}

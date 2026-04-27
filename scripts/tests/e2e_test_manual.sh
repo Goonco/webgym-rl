@@ -47,26 +47,38 @@ logstep() {
 
 trap cleanup EXIT INT TERM
 
-logstep "[1/4] launching webgym-rl server"
+logstep "#1 launching webgym-rl server"
 bash "$SCRIPT_DIR/launch/webgym_rl_launch.bash" &
 PIDS+=("$!")
 wait_for_http \
   "gateway" \
   "curl -fsS http://127.0.0.1:${PORT_GATEWAY}/health"
 
-logstep "[2/4] launching omnibox"
+logstep "#2 launching omnibox"
 bash "$SCRIPT_DIR/launch/omnibox_launch.bash" &
 PIDS+=("$!")
 wait_for_http \
   "omnibox" \
   "curl -fsS -H \"x-api-key: default_key\" http://127.0.0.1:${PORT_OMNIBOX_MASTER}/info"
 
-logstep "[3/4] launching fixture website"
-bash "$SCRIPT_DIR/launch/fixture_web_launch.bash" &
-PIDS+=("$!")
-wait_for_http \
-  "fixture website" \
-  "curl -fsS http://127.0.0.1:${PORT_FIXTURE_WEBSITE}/counter.html"
 
-logstep "[4/4] running health check"
+if [[ "$WITH_FIXTURE_WEBSITE" == "true" ]]; then
+  logstep "#3 launching fixture website"
+  bash "$SCRIPT_DIR/launch/fixture_web_launch.bash" &
+  PIDS+=("$!")
+
+  wait_for_http \
+    "fixture website" \
+    "curl -fsS http://127.0.0.1:${PORT_FIXTURE_WEBSITE}/counter.html"
+else
+  logstep "#3 skipping fixture website"
+fi
+
+logstep "#4 running health check"
 bash "$SCRIPT_DIR/health_check.bash"
+
+logstep "#5 e2e_test_manual"
+(
+  cd "$ROOT_DIR"
+  python -m tests.e2e_test_manual.manual_run
+)

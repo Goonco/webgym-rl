@@ -1,0 +1,42 @@
+[
+   {
+      "task_id":"form",
+      "task_name":"Use the Social Security Quick Calculator to estimate Alex Kim's retirement benefit. Alex Kim was born on January 1, 1975. Alex's current-year covered earnings are $80,000. Alex plans to retire in January 2042. Select today's dollars, submit the request, and stop when the benefit estimate page is shown.",
+      "website":"https://www.ssa.gov/OACT/quickcalc/",
+      "evaluation":{
+         "mode":"all",
+         "rules":[
+            {
+               "text_regex":"Date of birth:\\s*1/1/1975",
+               "match":"regex"
+            },
+            {
+               "text_regex":"Current earnings:\\s*\\$80,000\\.00",
+               "match":"regex"
+            },
+            {
+               "text_regex":"Benefit in year-2026 dollars",
+               "match":"regex"
+            },
+            {
+               "text_regex":"Retirement month:\\s*1/2042",
+               "match":"regex"
+            }
+         ]
+      }
+   },
+   {
+      "task_id":"counter",
+      "task_name":"Make the counter value 5.",
+      "website":"http://127.0.0.1:8123/counter.html",
+      "evaluation":{
+         "rules":[
+            {
+               "selector":"#count",
+               "text":"5",
+               "match":"exact"
+            }
+         ]
+      }
+   }
+]

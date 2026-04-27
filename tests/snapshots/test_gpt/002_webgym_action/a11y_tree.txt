@@ -1,2 +1,0 @@
-tag: button, role: button, text: decrease counter, coords: (584, 475)
-tag: button, role: button, text: increase counter, coords: (696, 475)
