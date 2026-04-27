@@ -1,15 +1,23 @@
 # webgym-rl
 
+Asyncronous environment for reinforce learning.
+
+
+
+
 ## Set up
 
-### Clone Repository
+> [!NOTE]  
+> This repository contains a slightly modifided version of [webgym](https://github.com/praveen-palanisamy/webgym) as a submodule. 
+
+### 1. Clone Repository
 
 ```bash
 git clone --recursive https://github.com/Goonco/webgym-rl
 cd webgym-rl;
 ```
 
-### Setup Webgym Environment
+### 2. Setup Webgym Environment
 
 ```bash
 conda create -n webgym-rl python=3.10
@@ -31,7 +39,21 @@ sudo apt-get update
 sudo apt-get install -y redis-server
 ```
 
-## Test And Run
+
+## Run
+
+서버 실행을 위해선 Gateway와 Omnibox Server를 각각 실행해야함. 로그의 편의를 위해 각각 다른 터미널에서 수행하는 것을 추천
+
+```bash
+bash scripts/launch/omnibox_launch.bash
+```
+
+```bash
+bash scripts/launch/webgym_rl_launch.bash
+```
+
+
+## Test
 
 ### E2E Test Manual
 
@@ -82,6 +104,7 @@ ACTIONS: list[list[dict[str, Any]]] = [
 bash scripts/tests/e2e_test_manual.sh
 ```
 
+
 ### E2E Test
 
 Test through openai api. Requires API key.
@@ -119,14 +142,7 @@ MAX_TRAJECTORY_IMAGES = 4
 bash scripts/tests/e2e_test.sh
 ```
 
-## Default Ports
 
-### External Port
-- `8123` : fixture website (for test)
-- `5500` : omnibox master
-- `18000` : gateway
+## TODO
 
-### Internal Port
-- `6379` : redis
-- `8080` : omnibox node
-- `9000+` : instance servers
+- [ ] pydantic refactor

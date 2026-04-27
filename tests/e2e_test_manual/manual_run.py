@@ -20,22 +20,12 @@ ACTIONS: list[list[dict[str, Any]]] = [
         {
             "action_type": "CLICK",
             "button": "left",
-            "num_clicks": 1,
+            "num_clicks": 5,
             "x": 849,
             "y": 303,
         },
-        {
-            "action_type": "HOTKEY",
-            "keys": ["ControlOrMeta", "a"],
-        },
-        {
-            "action_type": "TYPING",
-            "text": "1975",
-        },
     ]
 ]
-MAX_TRAJECTORY_IMAGES = 4
-MAX_AGENT_STEPS = 50
 
 # ============================================================
 

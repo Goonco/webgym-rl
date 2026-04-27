@@ -56,7 +56,7 @@ def create_app(config: Config):
     async def health() -> dict[str, Any]:
         return {"status": "ok", "config": config}
 
-    @app.post("/v1/env")
+    @app.post("/")
     async def handle_request(payload: dict[str, Any]) -> Response:
         request_started_at = time.monotonic()
 

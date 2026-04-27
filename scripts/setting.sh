@@ -19,8 +19,8 @@ readonly PORT_OMNIBOX_NODE=8080
 readonly PORT_OMNIBOX_INSTANCE_START=9000
 
 # Settings
-readonly OMNIBOX_INSTANCE=1
+readonly OMNIBOX_INSTANCE=4
 readonly OMNIBOX_MASTER_WORKERS=4
 readonly OMNIBOX_NODE_WORKERS=2
-readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/test.json"
+readonly WEBGYM_RL_CONFIG="$ROOT_DIR/config.json"
 readonly WITH_FIXTURE_WEBSITE=false

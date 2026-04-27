@@ -12,7 +12,7 @@ base_dir = (here_dir / "../../").resolve()
 # Modify only the values below for testing.
 # ============================================================
 
-TASK_ID = "form"
+TASK_ID = "example_home"
 SESSION_ID = int(time.time() * 1000)
 CONFIG_PATH = (base_dir / "./tests/fixtures/config/test.json").resolve()
 MODEL = "gpt-5.4-mini"

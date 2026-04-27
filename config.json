@@ -1,0 +1,40 @@
+{
+  "env_type": "webgym",
+  "gateway": {
+    "host": "127.0.0.1",
+    "port": 18000,
+    "max_workers": 4,
+    "max_in_flight": 4,
+    "verl_timeout": 60.0,
+    "in_flight_timeout": 5.0,
+    "deadline_margin": 2.0
+  },
+  "task_file_path": "tasks/tasks_all.json",
+  "webgym": {
+    "omnibox_host": "127.0.0.1",
+    "omnibox_port": 5500,
+    "omnibox_api_key": "default_key",
+    "http_stack": {
+      "allocate": {
+        "pool_size": 1,
+        "timeout": 20.0
+      },
+      "release": {
+        "pool_size": 1,
+        "timeout": 10.0
+      },
+      "navigate": {
+        "pool_size": 1,
+        "timeout": 20.0
+      },
+      "screenshot": {
+        "pool_size": 1,
+        "timeout": 20.0
+      },
+      "execute": {
+        "pool_size": 1,
+        "timeout": 10.0
+      }
+    }
+  }
+}

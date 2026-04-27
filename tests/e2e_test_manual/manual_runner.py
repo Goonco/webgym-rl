@@ -28,7 +28,7 @@ class ManualRunner:
             config: dict[str, Any] = json.load(f)
 
         gateway = config["gateway"]
-        self.url = f"http://{gateway['host']}:{gateway['port']}/v1/env"
+        self.url = f"http://{gateway['host']}:{gateway['port']}"
 
         # task_store = TaskStore.from_file(path=self.base_dir / f"./{config.task_file_path}")
         # self.task = task_store.get(self.task_id)

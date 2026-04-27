@@ -38,5 +38,77 @@
             }
          ]
       }
+   },
+   {
+      "task_id":"example_home",
+      "task_name":"Open Example Domain and stop when the landing page is fully visible.",
+      "website":"https://example.com/",
+      "evaluation":{
+         "mode":"all",
+         "rules":[
+            {
+               "title_regex":"Example Domain",
+               "match":"regex"
+            },
+            {
+               "text_regex":"Example Domain",
+               "match":"regex"
+            }
+         ]
+      }
+   },
+   {
+      "task_id":"irs_home",
+      "task_name":"Open the IRS homepage and stop when the main landing page is shown.",
+      "website":"https://www.irs.gov/",
+      "evaluation":{
+         "mode":"all",
+         "rules":[
+            {
+               "title_regex":"Internal Revenue Service",
+               "match":"regex"
+            },
+            {
+               "url_regex":"irs\\.gov",
+               "match":"regex"
+            }
+         ]
+      }
+   },
+   {
+      "task_id":"wikipedia_main",
+      "task_name":"Open Wikipedia's main page and stop when the main page is shown.",
+      "website":"https://en.wikipedia.org/wiki/Main_Page",
+      "evaluation":{
+         "mode":"all",
+         "rules":[
+            {
+               "title_regex":"Wikipedia",
+               "match":"regex"
+            },
+            {
+               "url_regex":"wikipedia\\.org/wiki/Main_Page",
+               "match":"regex"
+            }
+         ]
+      }
+   },
+   {
+      "task_id":"ssa_home",
+      "task_name":"Open the Social Security Administration homepage and stop when the homepage is shown.",
+      "website":"https://www.ssa.gov/",
+      "evaluation":{
+         "mode":"all",
+         "rules":[
+            {
+               "url_regex":"ssa\\.gov",
+               "match":"regex"
+            },
+            {
+               "text_regex":"Social Security",
+               "match":"regex"
+            }
+         ]
+      }
    }
 ]

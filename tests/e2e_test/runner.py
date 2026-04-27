@@ -50,7 +50,7 @@ class Runner:
         self.task_name = task.instruction
 
         gateway = config["gateway"]
-        self.url = f"http://{gateway['host']}:{gateway['port']}/v1/env"
+        self.url = f"http://{gateway['host']}:{gateway['port']}"
 
     def run(self) -> tuple[list[dict[str, Any]], str]:
         trace: list[dict[str, Any]] = []
