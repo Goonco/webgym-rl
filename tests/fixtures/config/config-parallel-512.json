@@ -4,31 +4,31 @@
   "gateway": {
     "host": "127.0.0.1",
     "port": 18001,
-    "max_workers": 256,
-    "max_in_flight": 256,
+    "max_workers": 512,
+    "max_in_flight": 512,
     "verl_timeout": 180.0,
     "in_flight_timeout": 30.0,
     "deadline_margin": 5.0
   },
   "httpstack": {
     "allocate": {
-      "pool_size": 32,
-      "timeout": 30.0
-    },
-    "release": {
-      "pool_size": 32,
-      "timeout": 15.0
-    },
-    "navigate": {
       "pool_size": 64,
       "timeout": 30.0
     },
+    "release": {
+      "pool_size": 64,
+      "timeout": 15.0
+    },
+    "navigate": {
+      "pool_size": 128,
+      "timeout": 30.0
+    },
     "screenshot": {
-      "pool_size": 96,
+      "pool_size": 160,
       "timeout": 30.0
     },
     "execute": {
-      "pool_size": 128,
+      "pool_size": 256,
       "timeout": 15.0
     }
   },
@@ -39,8 +39,8 @@
     "redis_port": 6379,
     "node_port": 8080,
     "instance_start_port": 9000,
-    "instances": 256,
-    "master_workers": 64,
-    "node_workers": 64
+    "instances": 512,
+    "master_workers": 96,
+    "node_workers": 96
   }
 }

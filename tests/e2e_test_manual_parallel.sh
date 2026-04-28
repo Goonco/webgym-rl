@@ -2,6 +2,16 @@
 set -euo pipefail
 
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/setting.sh"
+
+readonly LOG_DIR="$TEST_DIR/e2e_test_manual_parallel/__logs__"
+readonly RUN_ID="$(date +%Y%m%d-%H%M%S)"
+readonly LOG_FILE="$LOG_DIR/$RUN_ID.log"
+
+# mkdir -p "$LOG_DIR"
+# exec > >(tee -a "$LOG_FILE") 2>&1
+
+# printf 'Logging test output to %s\n\n' "$LOG_FILE"
+
 PIDS=()
 
 cleanup() {
@@ -91,7 +101,9 @@ logstep "#2 launching omnibox"
 PIDS+=("$!")
 wait_for_http \
   "omnibox" \
-  "curl -fsS -H \"x-api-key: ${OMNIBOX_API_KEY}\" http://${OMNIBOX_HOST}:${OMNIBOX_MASTER_PORT}/info"
+  "curl -fsS -H \"x-api-key: ${OMNIBOX_API_KEY}\" http://${OMNIBOX_HOST}:${OMNIBOX_MASTER_PORT}/info" \
+  "1000" \
+  "1"
 
 
 if [[ "$WITH_FIXTURE_WEBSITE" == "true" ]]; then

@@ -24,7 +24,7 @@ ACTION: list[dict[str, Any]] = [
     },
 ]
 
-CONCURRENCY = 256
+CONCURRENCY = 512
 MAX_STEPS = 5
 
 # ============================================================

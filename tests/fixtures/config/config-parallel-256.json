@@ -3,7 +3,7 @@
   "log_path": "logs/",
   "gateway": {
     "host": "127.0.0.1",
-    "port": 18000,
+    "port": 18001,
     "max_workers": 256,
     "max_in_flight": 256,
     "verl_timeout": 180.0,
@@ -11,11 +11,26 @@
     "deadline_margin": 5.0
   },
   "httpstack": {
-    "allocate": { "pool_size": 32, "timeout": 30.0 },
-    "release": { "pool_size": 32, "timeout": 15.0 },
-    "navigate": { "pool_size": 64, "timeout": 30.0 },
-    "screenshot": { "pool_size": 96, "timeout": 30.0 },
-    "execute": { "pool_size": 128, "timeout": 15.0 }
+    "allocate": {
+      "pool_size": 32,
+      "timeout": 30.0
+    },
+    "release": {
+      "pool_size": 32,
+      "timeout": 15.0
+    },
+    "navigate": {
+      "pool_size": 64,
+      "timeout": 30.0
+    },
+    "screenshot": {
+      "pool_size": 96,
+      "timeout": 30.0
+    },
+    "execute": {
+      "pool_size": 128,
+      "timeout": 15.0
+    }
   },
   "omnibox": {
     "host": "127.0.0.1",
@@ -26,6 +41,6 @@
     "instance_start_port": 9000,
     "instances": 256,
     "master_workers": 64,
-    "node_workers": 16
+    "node_workers": 64
   }
 }
