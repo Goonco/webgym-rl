@@ -1,5 +1,7 @@
 import json
-from datetime import datetime
+import random
+import time
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Optional
 
@@ -12,19 +14,24 @@ class Runner:
         *,
         task_id: str,
         session_id: int,
-        actions: list[list[dict[str, Any]]],
+        actions: Iterable[list[dict[str, Any]]],
         config_path: Path,
+        timestamp: str,
     ):
         self.task_id = task_id
         self.session_id = session_id
         self.actions = actions
+        self.rng = random.Random(session_id)
 
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S-%f")[:-3]
+        self.start_delay_range = (0.0, 1.5)
+        self.action_delay_range = (0.2, 1.0)
+        self.reward_delay_range = (0.0, 0.1)
 
         here_dir = Path(__file__).resolve().parent
-        self.base_dir = (here_dir / "../../").resolve()
+        base_dir = (here_dir / "../../").resolve()
         self.snapshot_dir = (
-            self.base_dir / f"./tests/e2e_test_manual/__snapshots__/{task_id}-{timestamp}"
+            base_dir
+            / f"./tests/e2e_test_manual_parallel/__snapshots__/{timestamp}_{task_id}/sid_{session_id}"
         )
 
         with open(config_path, "r", encoding="utf-8") as f:
@@ -33,14 +40,18 @@ class Runner:
         gateway = config["gateway"]
         self.url = f"http://{gateway['host']}:{gateway['port']}"
 
-        # task_store = TaskStore.from_file(path=self.base_dir / f"./{config.task_file_path}")
-        # self.task = task_store.get(self.task_id)
+    def _sleep_jitter(self, delay_range: tuple[float, float]) -> None:
+        low, high = delay_range
+        if high <= 0:
+            return
+        time.sleep(self.rng.uniform(low, high))
 
     def run(
         self,
     ):
         step = self._step_gen()
 
+        self._sleep_jitter(self.start_delay_range)
         start_response = post(
             self.url,
             {
@@ -52,6 +63,7 @@ class Runner:
         self._check_and_save_response("start", next(step), start_response)
 
         for action_batch in self.actions:
+            self._sleep_jitter(self.action_delay_range)
             action_response = post(
                 self.url,
                 {
@@ -64,6 +76,7 @@ class Runner:
             )
             self._check_and_save_response("action", next(step), action_response)
 
+        self._sleep_jitter(self.reward_delay_range)
         reward_response = post(
             self.url,
             {

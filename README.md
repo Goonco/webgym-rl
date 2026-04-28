@@ -67,7 +67,6 @@ bash webgym_rl_launch.bash
 
 ## Testing
 
-
 ### Manual E2E Test
 
 You can manually test tasks using the command below.
@@ -170,3 +169,8 @@ API_KEY = os.environ.get("OPENAI_API_KEY")
 MAX_STEPS = 10
 MAX_TRAJECTORY_IMAGES = 4
 ```
+
+## TODO
+
+- [ ] Multi Browser Tasks
+- [ ] 중간에 response 주기

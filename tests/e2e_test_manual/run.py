@@ -10,7 +10,7 @@ from .runner import Runner
 # Modify only the values below for testing.
 # ============================================================
 
-TASK_ID = "form"
+TASK_ID = "counter"
 SESSION_ID = int(time.time() * 1000)
 ACTIONS: list[list[dict[str, Any]]] = [
     [

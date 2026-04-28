@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 
-# ============================================================
+# =============================================================================================
 # User-defined settings
 # Modify only the values below for testing.
-# ============================================================
+# 
+# * Use the appropriate WEBGYM_RL_CONFIG for the target test
+# * Make sure to set WITH_FIXTURE_WEBSITE=true when using fixture websites
+# =============================================================================================
 
 readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 readonly TEST_DIR="$ROOT_DIR/tests"
 readonly FIXTURE_DIR="$TEST_DIR/fixtures"
-readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/config.json"
+readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/config-parallel.json"
 
-readonly WITH_FIXTURE_WEBSITE=false
+readonly WITH_FIXTURE_WEBSITE=true
 readonly FIXTURE_WEBSITE_PORT=8123
 
-# ============================================================
+# =============================================================================================
 
 json_get(){
     jq -r "$1" "$WEBGYM_RL_CONFIG"

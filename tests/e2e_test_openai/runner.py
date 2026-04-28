@@ -212,31 +212,40 @@ class Runner:
             {
                 "type": "input_text",
                 "text": (
-                    f"Task: {state['task_name']}\n"
-                    "Solve this WebGym task end-to-end using tools.\n"
-                    "Always use the latest screenshot and accessibility tree to decide actions.\n"
-                    "Do not use any hard-coded button coordinate from the test harness.\n\n"
-                    "Tool protocol:\n"
-                    "- Call webgym_start first.\n"
-                    "- Then call webgym_action until the task is complete.\n"
-                    "- Each webgym_action may contain multiple actions; they are executed sequentially in the order provided.\n"
-                    "- After the task is complete, send DONE with webgym_action.\n"
-                    "- After DONE, call webgym_reward exactly once.\n"
-                    "- If reward is 1.0, final answer must be exactly: PASS reward=1.0\n\n"
-                    "Important action semantics:\n"
-                    "- TYPING does not replace existing input text. It types into the currently focused field.\n"
-                    "- If an input already contains a value, first CLICK the input, then select all text, then type the new value.\n"
-                    "- To replace a value in an input, use this sequence:\n"
-                    "  1. CLICK the target input.\n"
-                    '  2. HOTKEY with keys ["ControlOrMeta", "a"].\n'
-                    "  3. TYPING with the replacement text.\n"
-                    "- For example, to replace a focused year field with 1975, use:\n"
+                    f"Task: {state['task_name']}",
+                    "Solve this WebGym task end-to-end using tools.",
+                    "Always use the latest screenshot and accessibility tree to decide actions.",
+                    "Do not use any hard-coded button coordinate from the test harness.",
+                    "",
+                    "Tool protocol:",
+                    "- Call webgym_start first.",
+                    "- Then call webgym_action until the task is complete.",
+                    "- Each webgym_action may contain multiple actions; they are executed "
+                    "sequentially in the order provided.",
+                    "- After the task is complete, send DONE with webgym_action.",
+                    "- After DONE, call webgym_reward exactly once.",
+                    "- If reward is 1.0, final answer must be exactly: PASS reward=1.0",
+                    "",
+                    "Important action semantics:",
+                    "- TYPING does not replace existing input text. It types into the "
+                    "currently focused field.",
+                    "- If an input already contains a value, first CLICK the input, then "
+                    "select all text, then type the new value.",
+                    "- To replace a value in an input, use this sequence:",
+                    "  1. CLICK the target input.",
+                    '  2. HOTKEY with keys ["ControlOrMeta", "a"].',
+                    "  3. TYPING with the replacement text.",
+                    "- For example, to replace a focused year field with 1975, use:",
                     '  {"action_type":"HOTKEY","keys":["ControlOrMeta","a"]}, '
-                    '{"action_type":"TYPING","text":"1975"}\n'
-                    "- If select-all is unreliable, delete the existing value with Backspace/Delete before typing.\n"
-                    "- For forms with separate month/day/year fields, fill each field separately.\n"
-                    "- Do not assume typing changed a value; verify using the next screenshot/accessibility tree.\n\n"
-                    f"Latest accessibility tree:\n{latest_a11y or '(none yet)'}"
+                    '{"action_type":"TYPING","text":"1975"}',
+                    "- If select-all is unreliable, delete the existing value with "
+                    "Backspace/Delete before typing.",
+                    "- For forms with separate month/day/year fields, fill each field separately.",
+                    "- Do not assume typing changed a value; verify using the next "
+                    "screenshot/accessibility tree.",
+                    "",
+                    "Latest accessibility tree:",
+                    latest_a11y or "(none yet)",
                 ),
             }
         ]
