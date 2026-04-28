@@ -2,10 +2,13 @@
 
 A web-based reinforcement learning environment for CUA.
 
+<br/>
+
 ## Setup
 
 > [!NOTE]  
 > This repository includes a slightly modified version of [webgym](https://github.com/praveen-palanisamy/webgym) as a submodule.
+
 
 ### 1. Clone the repository
 
@@ -13,6 +16,8 @@ A web-based reinforcement learning environment for CUA.
 git clone --recursive https://github.com/Goonco/webgym-rl
 cd webgym-rl
 ```
+
+<br/>
 
 ### 2. Set up the WebGym environment
 
@@ -40,6 +45,7 @@ sudo apt-get update
 sudo apt-get install -y redis-server
 ```
 
+<br/>
 
 ## Run
 
@@ -57,8 +63,10 @@ bash omnibox_launch.bash
 bash webgym_rl_launch.bash
 ```
 
+<br/>
 
 ## Testing
+
 
 ### Manual E2E Test
 
@@ -68,13 +76,15 @@ You can manually test tasks using the command below.
 bash tests/e2e_test_manual.sh
 ```
 
-#### Settings
+<br/>
 
-Before running the test, make sure to check the following settings.
+Before running the test, make sure to check the following settings in `tests/setting.sh` and `tests/e2e_test_manual/run.py`.
 
-##### `tests/setting.sh`
+<br/>
 
 ```bash
+# tests/setting.sh
+
 # ============================================================
 # User-defined settings
 # Modify only the values below for testing.
@@ -91,8 +101,9 @@ readonly FIXTURE_WEBSITE_PORT=8123
 # ============================================================
 ```
 
-##### `tests/e2e_test_manual/manual_run.py`
 ```python
+# tests/e2e_test_manual/run.py
+
 # ============================================================
 # User-defined settings
 # Modify only the values below for testing.
@@ -114,25 +125,38 @@ ACTIONS: list[list[dict[str, Any]]] = [
 # ============================================================
 ```
 
+<br/>
+
 ### OpenAI E2E Test
 
 > [!CAUTION]  
 > Requires refactoring. Unavailable now.
 
-Test through openai api. Requires API key.
+> [!NOTE]  
+> Requires an `OPENAI_API_KEY` in `.env`
 
-#### Settings
-
-You **must** check bellow settings before the test.
-
-`scripts/setting.sh`
+You can test tasks using openai api using the command below.
 
 ```bash
+bash tests/e2e_test_openai.sh
+```
+
+<br/>
+
+Before running the test, make sure to check the following settings in `tests/setting.sh` and `tests/e2e_test_openai/run.py`.
+
+<br/>
+
+
+```bash
+# tests/setting.sh
+
 readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/test.json"
 ```
 
-`tests/e2e_test/run.py`
 ```python
+# tests/e2e_test_openai/run.py
+
 # ============================================================
 # User-defined settings
 # Modify only the values below for testing.
@@ -145,11 +169,4 @@ MODEL = "gpt-5.4-mini"
 API_KEY = os.environ.get("OPENAI_API_KEY")
 MAX_STEPS = 10
 MAX_TRAJECTORY_IMAGES = 4
-```
-
-
-#### Run
-
-```bash
-bash scripts/tests/e2e_test.sh
 ```
