@@ -1,23 +1,20 @@
 # webgym-rl
 
-Asyncronous environment for reinforce learning.
+A web-based reinforcement learning environment for CUA.
 
-
-
-
-## Set up
+## Setup
 
 > [!NOTE]  
-> This repository contains a slightly modifided version of [webgym](https://github.com/praveen-palanisamy/webgym) as a submodule. 
+> This repository includes a slightly modified version of [webgym](https://github.com/praveen-palanisamy/webgym) as a submodule.
 
-### 1. Clone Repository
+### 1. Clone the repository
 
 ```bash
 git clone --recursive https://github.com/Goonco/webgym-rl
-cd webgym-rl;
+cd webgym-rl
 ```
 
-### 2. Setup Webgym Environment
+### 2. Set up the WebGym environment
 
 ```bash
 conda create -n webgym-rl python=3.10
@@ -25,7 +22,11 @@ conda activate webgym-rl
 
 pip install -U pip uv
 uv pip install -r requirements.txt
+```
 
+The commands below install system-level dependencies and are not tied to the Conda environment.
+
+```bash
 playwright install chromium
 
 # Linux only
@@ -42,8 +43,11 @@ sudo apt-get install -y redis-server
 
 ## Run
 
-서버 실행을 위해선 Gateway와 Omnibox Server를 각각 실행해야함. 로그의 편의를 위해 각각 다른 터미널에서 수행하는 것을 추천.
-`config.json` 을 수정하여 두 서버에 대한 조작 가능. `setting.sh` 수정 불필요!
+To start the server, you need to run both the Gateway and the Omnibox Server.
+For easier log monitoring, we recommend running them in separate terminal sessions.
+
+You can configure both servers by editing config.json.
+There is no need to modify setting.sh.
 
 ```bash
 bash omnibox_launch.bash
@@ -54,65 +58,70 @@ bash webgym_rl_launch.bash
 ```
 
 
-## Test
+## Testing
 
-현재 테스트에 수정된 config 적용안됨. 사용 불가
+### Manual E2E Test
 
-### E2E Test Manual
-
-Test through manual action.
-
-#### Checklist
-
-You **must** check bellow settings before the test.
-
-`scripts/setting.sh`
+You can manually test tasks using the command below.
 
 ```bash
-readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/test.json"
+bash tests/e2e_test_manual.sh
 ```
 
-`tests/e2e_test_manual/manual_run.py`
+#### Settings
+
+Before running the test, make sure to check the following settings.
+
+##### `tests/setting.sh`
+
+```bash
+# ============================================================
+# User-defined settings
+# Modify only the values below for testing.
+# ============================================================
+
+readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly TEST_DIR="$ROOT_DIR/tests"
+readonly FIXTURE_DIR="$TEST_DIR/fixtures"
+readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/config.json"
+
+readonly WITH_FIXTURE_WEBSITE=false
+readonly FIXTURE_WEBSITE_PORT=8123
+
+# ============================================================
+```
+
+##### `tests/e2e_test_manual/manual_run.py`
 ```python
 # ============================================================
 # User-defined settings
 # Modify only the values below for testing.
 # ============================================================
 TASK_ID = "form"
+SESSION_ID = int(time.time() * 1000)
 ACTIONS: list[list[dict[str, Any]]] = [
     [
         {
             "action_type": "CLICK",
             "button": "left",
-            "num_clicks": 1,
+            "num_clicks": 5,
             "x": 849,
             "y": 303,
         },
-        {
-            "action_type": "HOTKEY",
-            "keys": ["ControlOrMeta", "a"],
-        },
-        {
-            "action_type": "TYPING",
-            "text": "1975",
-        },
     ]
 ]
-// ...
+
+# ============================================================
 ```
 
-#### Run
+### OpenAI E2E Test
 
-```bash
-bash scripts/tests/e2e_test_manual.sh
-```
-
-
-### E2E Test
+> [!CAUTION]  
+> Requires refactoring. Unavailable now.
 
 Test through openai api. Requires API key.
 
-#### Checklist
+#### Settings
 
 You **must** check bellow settings before the test.
 
@@ -144,8 +153,3 @@ MAX_TRAJECTORY_IMAGES = 4
 ```bash
 bash scripts/tests/e2e_test.sh
 ```
-
-
-## TODO
-
-- [ ] pydantic refactor
