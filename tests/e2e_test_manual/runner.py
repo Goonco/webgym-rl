@@ -1,11 +1,12 @@
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
 from tests.util import assert_ok_response, decode_png_base64, post
 
 
-class ManualRunner:
+class Runner:
     def __init__(
         self,
         *,
@@ -18,10 +19,12 @@ class ManualRunner:
         self.session_id = session_id
         self.actions = actions
 
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")[:-3]
+
         here_dir = Path(__file__).resolve().parent
         self.base_dir = (here_dir / "../../").resolve()
         self.snapshot_dir = (
-            self.base_dir / f"./tests/e2e_test_manual/__snapshots__/{task_id}-{session_id}"
+            self.base_dir / f"./tests/e2e_test_manual/__snapshots__/{task_id}-{timestamp}"
         )
 
         with open(config_path, "r", encoding="utf-8") as f:

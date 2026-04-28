@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 
-readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly WEBGYM_RL_CONFIG="$ROOT_DIR/config.json"
+# ============================================================
+# User-defined settings
+# Modify only the values below for testing.
+# ============================================================
 
-json_get() {
-  jq -r "$1" "$WEBGYM_RL_CONFIG"
+readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly TEST_DIR="$ROOT_DIR/tests"
+readonly FIXTURE_DIR="$TEST_DIR/fixtures"
+readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/config.json"
+
+readonly WITH_FIXTURE_WEBSITE=false
+readonly FIXTURE_WEBSITE_PORT=8123
+
+# ============================================================
+
+json_get(){
+    jq -r "$1" "$WEBGYM_RL_CONFIG"
 }
 
 readonly GATEWAY_HOST="$(jq -r '.gateway.host' "$WEBGYM_RL_CONFIG")"

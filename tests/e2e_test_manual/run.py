@@ -1,11 +1,9 @@
+import argparse
 import time
 from pathlib import Path
 from typing import Any
 
-from .manual_runner import ManualRunner
-
-here_dir = Path(__file__).resolve().parent
-base_dir = (here_dir / "../../").resolve()
+from .runner import Runner
 
 # ============================================================
 # User-defined settings
@@ -14,7 +12,6 @@ base_dir = (here_dir / "../../").resolve()
 
 TASK_ID = "form"
 SESSION_ID = int(time.time() * 1000)
-CONFIG_PATH = (base_dir / "./tests/fixtures/config/test.json").resolve()
 ACTIONS: list[list[dict[str, Any]]] = [
     [
         {
@@ -30,9 +27,25 @@ ACTIONS: list[list[dict[str, Any]]] = [
 # ============================================================
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--config-path",
+        type=Path,
+        help="Path to the config JSON file",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
-    runner = ManualRunner(
-        task_id=TASK_ID, session_id=SESSION_ID, actions=ACTIONS, config_path=CONFIG_PATH
+    args = parse_args()
+    config_path = args.config_path.resolve()
+
+    runner = Runner(
+        task_id=TASK_ID,
+        session_id=SESSION_ID,
+        actions=ACTIONS,
+        config_path=config_path,
     )
     runner.run()
 
