@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, Any, Literal, Union
+from typing import Annotated, Any, Literal, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -26,7 +26,7 @@ class ActionType(str, Enum):
 
 
 class BaseComputerAction(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(frozen=True)
 
     action_type: ActionType
 
@@ -37,36 +37,6 @@ class BaseComputerAction(BaseModel):
 
 class MoveToAction(BaseComputerAction):
     action_type: Literal[ActionType.MOVE_TO]
-    x: int
-    y: int
-
-
-class ClickAction(BaseComputerAction):
-    action_type: Literal[ActionType.CLICK]
-    button: str
-    x: int
-    y: int
-    num_clicks: int
-
-
-class MouseDownAction(BaseComputerAction):
-    action_type: Literal[ActionType.MOUSE_DOWN]
-    button: str
-
-
-class MouseUpAction(BaseComputerAction):
-    action_type: Literal[ActionType.MOUSE_UP]
-    button: str
-
-
-class RightClickAction(BaseComputerAction):
-    action_type: Literal[ActionType.RIGHT_CLICK]
-    x: int
-    y: int
-
-
-class DoubleClickAction(BaseComputerAction):
-    action_type: Literal[ActionType.DOUBLE_CLICK]
     x: int
     y: int
 
@@ -88,6 +58,33 @@ class TypingAction(BaseComputerAction):
     text: str
 
 
+class HotkeyAction(BaseComputerAction):
+    action_type: Literal[ActionType.HOTKEY]
+    keys: list[str]
+
+
+###############
+# Void Action #
+###############
+
+
+class WaitAction(BaseComputerAction):
+    action_type: Literal[ActionType.WAIT]
+
+
+class FailAction(BaseComputerAction):
+    action_type: Literal[ActionType.FAIL]
+
+
+class DoneAction(BaseComputerAction):
+    action_type: Literal[ActionType.DONE]
+
+
+#####################
+# Single Key Action #
+#####################
+
+
 class PressAction(BaseComputerAction):
     action_type: Literal[ActionType.PRESS]
     key: str
@@ -103,21 +100,46 @@ class KeyUpAction(BaseComputerAction):
     key: str
 
 
-class HotkeyAction(BaseComputerAction):
-    action_type: Literal[ActionType.HOTKEY]
-    keys: list[str]
+################
+# Mouse Action #
+################
 
 
-class WaitAction(BaseComputerAction):
-    action_type: Literal[ActionType.WAIT]
+class MouseButtonType(str, Enum):
+    LEFT = "left"
+    RIGHT = "right"
+    MIDDLE = "middle"
 
 
-class FailAction(BaseComputerAction):
-    action_type: Literal[ActionType.FAIL]
+class _MouseAction(BaseComputerAction):
+    button: MouseButtonType = MouseButtonType.LEFT
 
 
-class DoneAction(BaseComputerAction):
-    action_type: Literal[ActionType.DONE]
+class MouseDownAction(_MouseAction):
+    action_type: Literal[ActionType.MOUSE_DOWN]
+
+
+class MouseUpAction(_MouseAction):
+    action_type: Literal[ActionType.MOUSE_UP]
+
+
+class ClickAction(_MouseAction):
+    action_type: Literal[ActionType.CLICK]
+    x: Optional[int] = None
+    y: Optional[int] = None
+    num_clicks: int = Field(default=1, ge=1)
+
+
+class RightClickAction(ClickAction):
+    action_type: Literal[ActionType.RIGHT_CLICK]
+    button: Literal[MouseButtonType.RIGHT] = MouseButtonType.RIGHT
+    num_clicks: int = 1
+
+
+class DoubleClickAction(ClickAction):
+    action_type: Literal[ActionType.DOUBLE_CLICK]
+    button: Literal[MouseButtonType.LEFT] = MouseButtonType.LEFT
+    num_clicks: int = 2
 
 
 ComputerAction = Annotated[

@@ -64,6 +64,22 @@ class Runner:
             )
             self._check_and_save_response("action", next(step), action_response)
 
+        done_response = post(
+            self.url,
+            {
+                "op": "action",
+                "session_id": self.session_id,
+                "task_id": self.task_id,
+                "include_a11y": True,
+                "actions": [
+                    {
+                        "action_type": "DONE",
+                    }
+                ],
+            },
+        )
+        self._check_and_save_response("action", next(step), done_response)
+
         reward_response = post(
             self.url,
             {

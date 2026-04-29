@@ -1,17 +1,15 @@
 from typing import Annotated, Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 
 from src.schemas.computer_action import ComputerAction
 
 
-class _FrozenBaseModel(BaseModel):
+class _BaseEnvRequest(BaseModel):
     model_config = ConfigDict(
         frozen=True,
     )
 
-
-class _BaseEnvRequest(_FrozenBaseModel):
     session_id: int
     task_id: str
     include_a11y: bool = False
@@ -34,3 +32,5 @@ Request = Annotated[
     Union[StartRequest, ActionRequest, RewardRequest],
     Field(discriminator="op"),
 ]
+
+RequestAdapter = TypeAdapter(Request)

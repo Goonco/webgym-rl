@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+readonly TEST_DIR="$ROOT_DIR/tests"
+readonly FIXTURE_DIR="$TEST_DIR/fixtures"
+
 # =============================================================================================
 # User-defined settings
 # Modify only the values below for testing.
@@ -8,10 +12,7 @@
 # * Make sure to set WITH_FIXTURE_WEBSITE=true when using fixture websites
 # =============================================================================================
 
-readonly ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly TEST_DIR="$ROOT_DIR/tests"
-readonly FIXTURE_DIR="$TEST_DIR/fixtures"
-readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/config-parallel.json"
+readonly WEBGYM_RL_CONFIG="$FIXTURE_DIR/config/config-single.json"
 
 readonly WITH_FIXTURE_WEBSITE=true
 readonly FIXTURE_WEBSITE_PORT=8123

@@ -99,24 +99,6 @@ def screenshot(
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
 
-def get_interactive_tree(
-    host: str,
-    port: int,
-    api_key: str,
-    instance: OmniboxInstance,
-) -> str:
-    master_client = MasterClient(host=host, port=port, api_key=api_key)
-    response = master_client.execute(instance, {"get_interactive_rects": {}})
-
-    if response.status_code != 200:
-        if response.status_code >= 500:
-            raise OmniboxBusyError(f"Error: {response.status_code} - {response.text}")
-        raise Exception(f"Error: {response.status_code} - {response.text}")
-
-    regions: dict[str, Any] = response.json()
-    return _format_interactive_regions(regions)
-
-
 def get_page_snapshot(
     host: str,
     port: int,
@@ -144,9 +126,35 @@ def get_page_snapshot(
     return response.json()
 
 
-def _format_interactive_regions(regions: dict[str, Any]) -> str:
-    lines = []
+def get_interactive_tree(
+    host: str,
+    port: int,
+    api_key: str,
+    instance: OmniboxInstance,
+) -> str:
+    master_client = MasterClient(host=host, port=port, api_key=api_key)
+    response = master_client.execute(instance, {"get_interactive_rects": {}})
 
+    if response.status_code != 200:
+        if response.status_code >= 500:
+            raise OmniboxBusyError(f"Error: {response.status_code} - {response.text}")
+        raise Exception(f"Error: {response.status_code} - {response.text}")
+
+    payload: dict[str, Any] = response.json()
+    return _format_interactive_regions(payload)
+
+
+def _format_interactive_regions(payload: dict[str, Any]) -> str:
+    lines: list[str] = []
+
+    mouse_position = payload.get("mouse_position")
+    if isinstance(mouse_position, dict):
+        x = mouse_position.get("x")
+        y = mouse_position.get("y")
+        if isinstance(x, (int, float)) and isinstance(y, (int, float)):
+            lines.append(f"mouse_position: ({int(x)}, {int(y)})")
+
+    regions = payload.get("regions", {})
     for _, region in regions.items():
         text = region.get("aria_name") or region.get("aria-name") or ""
         tag = region.get("tag_name", "")

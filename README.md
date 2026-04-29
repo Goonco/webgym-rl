@@ -174,3 +174,8 @@ MAX_TRAJECTORY_IMAGES = 4
 
 - [ ] Multi Browser Tasks
 - [ ] 중간에 response 주기
+- [ ] 마우스 커서 사진과 위치
+- [ ] a11ytree -> privileged information
+    - {
+
+    }

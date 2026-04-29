@@ -5,10 +5,26 @@ from dataclasses import dataclass, field
 from typing import Dict
 
 from environment.webgym.webgym.environment.process_isolator import ProcessBasedHttpStack
-from src.schemas.computer_action import ActionType
+from src.schemas.computer_action import (
+    ActionType,
+    ClickAction,
+    ComputerAction,
+    DoneAction,
+    DragToAction,
+    FailAction,
+    HotkeyAction,
+    KeyDownAction,
+    MouseDownAction,
+    MouseUpAction,
+    MoveToAction,
+    PressAction,
+    ScrollAction,
+    TypingAction,
+    WaitAction,
+)
 from src.schemas.config import HttpStackConfig, OmniboxConfig
 from src.schemas.omnibox import OmniboxInstance
-from src.schemas.request import ActionRequest, Request, RewardRequest, StartRequest
+from src.schemas.request import ActionRequest, Request, RequestAdapter, RewardRequest, StartRequest
 from src.schemas.response import ActionResponse, ImagePayload, RewardResponse
 from src.task_store import TaskStore
 from src.webgym.error import WebGymEnvRetryableError
@@ -97,17 +113,15 @@ class WebGym:
         self.http_stack.stop()
 
     def handle_request(self, request: Request, deadline_at: float):
+        request = RequestAdapter.validate_python(request)
+
         deadline = RequestDeadline(deadline_at)
         if isinstance(request, StartRequest):
-            response = self._handle_start(request, deadline)
-        elif isinstance(request, ActionRequest):
-            response = self._handle_action(request, deadline)
-        elif isinstance(request, RewardRequest):
-            response = self._handle_reward(request)
-        else:
-            raise TypeError(f"Unsupported request type: {type(request).__name__}")
-
-        return response
+            return self._handle_start(request, deadline)
+        if isinstance(request, ActionRequest):
+            return self._handle_action(request, deadline)
+        if isinstance(request, RewardRequest):
+            return self._handle_reward(request)
 
     def _handle_start(self, request: StartRequest, deadline: RequestDeadline) -> ActionResponse:
         session_id = request.session_id
@@ -155,18 +169,23 @@ class WebGym:
             raise KeyError(f"Unknown session_id: {session_id}")
 
         instance = self.session_map[session_id]
-        terminal_action_type = self._terminal_action_type(request.actions)
+        terminal_action = None
 
         try:
             for action in request.actions:
+                action_type = action.action_type
+
                 for command in self._browser_commands_for_action(action):
                     self._execute_browser_command(instance, command, deadline)
 
-            if terminal_action_type == ActionType.FAIL:
-                self.reward_cache[session_id] = 0.0
-            elif terminal_action_type == ActionType.DONE:
-                task = self.task_store.get(task_id)
-                self.reward_cache[session_id] = self._evaluate(task, instance, deadline)
+                if action_type == ActionType.FAIL:
+                    terminal_action = ActionType.FAIL
+                    self.reward_cache[session_id] = 0.0
+                elif action_type == ActionType.DONE:
+                    terminal_action = ActionType.DONE
+                    task = self.task_store.get(task_id)
+                    self.reward_cache[session_id] = self._evaluate(task, instance, deadline)
+                    break
 
             screenshot = self._screenshot(instance, deadline)
             text = None
@@ -180,13 +199,13 @@ class WebGym:
                 image=ImagePayload(data=screenshot, mimeType="image/png"),
             )
         finally:
-            if terminal_action_type is not None:
+            if terminal_action is not None:
                 released_instance = self.session_map.pop(session_id, None)
                 if released_instance is not None:
                     self._schedule_release(
                         released_instance,
                         task_id=task_id,
-                        reason=f"terminal_{terminal_action_type.value.lower()}",
+                        reason=f"terminal_{terminal_action.value.lower()}",
                     )
 
     def _handle_reward(
@@ -200,13 +219,6 @@ class WebGym:
             task_id=request.task_id,
             reward=reward,
         )
-
-    def _terminal_action_type(self, actions) -> ActionType | None:
-        terminal_action_type = None
-        for action in actions:
-            if action.action_type in {ActionType.DONE, ActionType.FAIL}:
-                terminal_action_type = action.action_type
-        return terminal_action_type
 
     def _evaluate(self, task, instance: OmniboxInstance, deadline: RequestDeadline) -> float:
         if task.evaluation is None:
@@ -361,71 +373,59 @@ class WebGym:
             )
         )
 
-    def _browser_commands_for_action(self, action) -> list[dict]:
-        action_type = action.action_type
-
-        if action_type == ActionType.MOVE_TO:
+    def _browser_commands_for_action(self, action: ComputerAction) -> list[dict]:
+        if isinstance(action, MoveToAction):
             return [{"hover_coords": {"x": action.x, "y": action.y}}]
 
-        if action_type == ActionType.CLICK:
-            if action.button.lower() != "left":
-                raise ValueError(f"Unsupported CLICK button: {action.button}")
-            num_clicks = max(1, int(action.num_clicks))
-            return [{"click_coords": {"x": action.x, "y": action.y}} for _ in range(num_clicks)]
+        if isinstance(action, ScrollAction):
+            return [{"scroll_pointer": {"dx": action.dx, "dy": action.dy}}]
 
-        if action_type == ActionType.RIGHT_CLICK:
-            raise ValueError("RIGHT_CLICK is not supported by the current Omnibox command API")
-
-        if action_type == ActionType.DOUBLE_CLICK:
-            return [
-                {"click_coords": {"x": action.x, "y": action.y}},
-                {"click_coords": {"x": action.x, "y": action.y}},
-            ]
-
-        if action_type == ActionType.MOUSE_DOWN:
-            raise ValueError("MOUSE_DOWN is not supported by the current Omnibox command API")
-
-        if action_type == ActionType.MOUSE_UP:
-            raise ValueError("MOUSE_UP is not supported by the current Omnibox command API")
-
-        if action_type == ActionType.DRAG_TO:
-            raise ValueError("DRAG_TO is not supported by the current Omnibox command API")
-
-        if action_type == ActionType.SCROLL:
-            if action.dy < 0:
-                return [{"page_up": {"amount": abs(action.dy), "full_page": False}}]
-            if action.dy > 0:
-                return [{"page_down": {"amount": abs(action.dy), "full_page": False}}]
-            if action.dx < 0:
-                return [{"hover_and_scroll_coords": {"x": 640, "y": 384, "direction": "left"}}]
-            if action.dx > 0:
-                return [{"hover_and_scroll_coords": {"x": 640, "y": 384, "direction": "right"}}]
-            return [{"sleep": {"duration": 0.1}}]
-
-        if action_type == ActionType.TYPING:
+        if isinstance(action, TypingAction):
             return [
                 {"keypress": {"keys": [key]}} for key in self._text_to_key_sequence(action.text)
             ]
 
-        if action_type == ActionType.PRESS:
-            return [{"keypress": {"keys": [action.key]}}]
-
-        if action_type == ActionType.KEY_DOWN:
-            return [{"keypress": {"keys": [action.key]}}]
-
-        if action_type == ActionType.KEY_UP:
-            return [{"keypress": {"keys": [action.key]}}]
-
-        if action_type == ActionType.HOTKEY:
+        if isinstance(action, HotkeyAction):
             return [{"keypress": {"keys": action.keys}}]
 
-        if action_type == ActionType.WAIT:
+        #####################
+        # Single Key Action #
+        #####################
+
+        if isinstance(action, (PressAction, KeyDownAction, KeyDownAction)):
+            return [{"keypress": {"keys": [action.key]}}]
+
+        ################
+        # Mouse Action #
+        ################
+
+        if isinstance(action, ClickAction):
+            return [
+                {"click_coords": {"x": action.x, "y": action.y, "button": action.button}}
+                for _ in range(action.num_clicks)
+            ]
+
+        if isinstance(action, MouseDownAction):
+            raise ValueError("MOUSE_DOWN is not supported by the current Omnibox command API")
+
+        if isinstance(action, MouseUpAction):
+            raise ValueError("MOUSE_UP is not supported by the current Omnibox command API")
+
+        if isinstance(action, DragToAction):
+            raise ValueError("DRAG_TO is not supported by the current Omnibox command API")
+
+        ###############
+        # Void Action #
+        ###############
+
+        if isinstance(action, WaitAction):
             return [{"sleep": {"duration": 1.0}}]
 
-        if action_type in {ActionType.DONE, ActionType.FAIL}:
+        if isinstance(action, (DoneAction, FailAction)):
             return []
 
-        raise ValueError(f"Unsupported action_type: {action_type}")
+        # for return type inference
+        raise Exception
 
     def _text_to_key_sequence(self, text: str) -> list[str]:
         keys = []

@@ -16,12 +16,13 @@ ACTIONS: list[list[dict[str, Any]]] = [
     [
         {
             "action_type": "CLICK",
-            "button": "left",
-            "num_clicks": 5,
-            "x": 849,
-            "y": 303,
+            "x": 696,
+            "y": 475,
         },
-    ]
+    ],
+    [
+        {"action_type": "CLICK", "num_clicks": 4},
+    ],
 ]
 
 # ============================================================
