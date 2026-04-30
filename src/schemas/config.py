@@ -4,8 +4,8 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
+from log import runtime_logger
 from src.schemas.error import ConfigError
-from src.util import runtime_logger
 
 
 class FrozenBaseModel(BaseModel):
