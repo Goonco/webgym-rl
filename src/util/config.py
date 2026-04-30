@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
-
-from log import runtime_logger
-from src.schemas.error import ConfigError
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class FrozenBaseModel(BaseModel):
@@ -38,9 +35,10 @@ class HttpStackConfig(FrozenBaseModel):
     screenshot: OperationConfig
     execute: OperationConfig
 
-    # ############ #
+    ################
     # Unused Pools #
-    # ############ #
+    ################
+
     # metadata: OperationConfig
     # ac_tree: OperationConfig
     # page_metadata: OperationConfig
@@ -77,30 +75,3 @@ class Config(FrozenBaseModel):
 
     omnibox_config: OmniboxConfig = Field(alias="omnibox")
     httpstack_config: HttpStackConfig = Field(alias="httpstack")
-
-
-def _validate_config(config: Config) -> None:
-    gateway_config = config.gateway
-    if gateway_config.max_workers < gateway_config.max_in_flight:
-        runtime_logger.warning(
-            "Gateway max_workers (%s) is smaller than max_in_flight (%s). "
-            "Requests may acquire in-flight slots faster than executor workers "
-            "can process them, which can lead to queued HTTP sessions timing out. "
-            "Consider setting max_workers >= max_in_flight.",
-            gateway_config.max_workers,
-            gateway_config.max_in_flight,
-        )
-
-
-def load_config(config_path: Path) -> Config:
-    if not config_path.is_file():
-        raise ConfigError(f"configuration file required but not found in {config_path}")
-
-    try:
-        config = Config.model_validate_json(config_path.read_text())
-    except ValidationError as exc:
-        raise ConfigError(f"{config_path} is invalid\n{exc}")
-
-    _validate_config(config)
-
-    return config

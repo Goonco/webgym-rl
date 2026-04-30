@@ -2,7 +2,7 @@ from typing import Annotated, Literal, Union
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 
-from src.schemas.computer_action import ComputerAction
+from gateway.protocol.computer13 import Computer13
 
 
 class _BaseEnvRequest(BaseModel):
@@ -21,7 +21,7 @@ class StartRequest(_BaseEnvRequest):
 
 class ActionRequest(_BaseEnvRequest):
     op: Literal["action"]
-    actions: list[ComputerAction] = Field(min_length=1)
+    actions: list[Computer13] = Field(min_length=1)
 
 
 class RewardRequest(_BaseEnvRequest):

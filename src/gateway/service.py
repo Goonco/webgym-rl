@@ -7,10 +7,19 @@ from typing import Dict
 from typing_extensions import assert_never
 
 from environment.webgym.webgym.environment.process_isolator import ProcessBasedHttpStack
-from src.schemas.computer_action import (
+from gateway.http_functions import (
+    allocate_instance,
+    execute_browser_command,
+    get_interactive_tree,
+    get_page_snapshot,
+    navigate,
+    reset_instance,
+    screenshot,
+)
+from gateway.protocol.computer13 import (
     ActionType,
     ClickAction,
-    ComputerAction,
+    Computer13,
     DoneAction,
     DragToAction,
     FailAction,
@@ -24,26 +33,24 @@ from src.schemas.computer_action import (
     TypingAction,
     WaitAction,
 )
-from src.schemas.config import HttpStackConfig, OmniboxConfig
-from src.schemas.omnibox import OmniboxInstance
-from src.schemas.request import ActionRequest, Request, RequestAdapter, RewardRequest, StartRequest
-from src.schemas.response import ActionResponse, ImagePayload, RewardResponse
-from src.task_store import TaskStore
-from src.webgym.error import WebGymEnvRetryableError
-from src.webgym.pickleable_http_functions import (
-    allocate_instance,
-    execute_browser_command,
-    get_interactive_tree,
-    get_page_snapshot,
-    navigate,
-    reset_instance,
-    screenshot,
+from gateway.protocol.request import (
+    ActionRequest,
+    Request,
+    RequestAdapter,
+    RewardRequest,
+    StartRequest,
 )
-from src.webgym.rule_evaluator import (
+from gateway.protocol.response import ActionResponse, ImagePayload, RewardResponse
+from gateway.rule_evaluator import (
     collect_selectors,
     evaluate_page_rules,
     uses_page_html,
 )
+from omnibox.omnibox import OmniboxInstance
+from util.config import HttpStackConfig, OmniboxConfig
+from util.task_store import TaskStore
+
+from .error import WebGymEnvRetryableError
 
 
 class DeadlineExceeded(TimeoutError):
@@ -217,6 +224,7 @@ class WebGym:
         request: RewardRequest,
     ) -> RewardResponse:
         reward = self.reward_cache.pop(request.session_id, 0.0)
+        # [TODO] 에러처리
 
         return RewardResponse(
             session_id=request.session_id,
@@ -377,7 +385,7 @@ class WebGym:
             )
         )
 
-    def _browser_commands_for_action(self, action: ComputerAction) -> list[dict]:
+    def _browser_commands_for_action(self, action: Computer13) -> list[dict]:
         if isinstance(action, MoveToAction):
             return [{"hover_coords": {"x": action.x, "y": action.y}}]
 

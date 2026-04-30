@@ -2,8 +2,9 @@ from typing import Any
 
 import requests
 
-from src.schemas.omnibox import OmniboxInstance
-from src.webgym.error import OmniBoxTransportError
+from omnibox.omnibox import OmniboxInstance
+
+from .error import OmniBoxTransportError
 
 
 class _RequestsProxy:

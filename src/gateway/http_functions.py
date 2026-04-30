@@ -6,9 +6,10 @@ from typing import Any
 from PIL import Image, UnidentifiedImageError
 
 from environment.webgym.webgym.misc import is_white_image
-from src.schemas.omnibox import OmniboxInstance
-from src.webgym.client import MasterClient
-from src.webgym.error import OmniboxBusyError, OmniboxInvalidScreenshotError
+from omnibox.omnibox import OmniboxInstance
+
+from .error import OmniboxBusyError, OmniboxInvalidScreenshotError
+from .omnibox_master_client import MasterClient
 
 
 def navigate(host, port, api_key, instance: OmniboxInstance, url: str):

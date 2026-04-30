@@ -1,3 +1,11 @@
+class WebGymRLError(Exception):
+    pass
+
+
+class ConfigError(WebGymRLError):
+    pass
+
+
 class WebGymEnvRetryableError(Exception):
     pass
 

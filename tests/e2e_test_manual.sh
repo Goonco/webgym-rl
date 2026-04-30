@@ -53,9 +53,9 @@ trap cleanup EXIT INT TERM
 logstep "#1 launching webgym-rl server"
 (
   cd "$ROOT_DIR" || exit 1
-  printf 'Executing "python -m src.server %s"\n\n' \
+  printf 'Executing "python -m src.main %s"\n\n' \
     "$WEBGYM_RL_CONFIG"
-  exec python -m src.server "$WEBGYM_RL_CONFIG"
+  exec python -m src.main "$WEBGYM_RL_CONFIG"
 ) &
 PIDS+=("$!")
 wait_for_http \

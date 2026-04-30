@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Annotated, Any, Literal, Optional, Union
+from typing import Annotated, Any, Literal, Optional, TypeAlias, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -58,11 +58,6 @@ class TypingAction(BaseComputerAction):
     text: str
 
 
-class HotkeyAction(BaseComputerAction):
-    action_type: Literal[ActionType.HOTKEY]
-    keys: list[str]
-
-
 ###############
 # Void Action #
 ###############
@@ -79,6 +74,8 @@ class FailAction(BaseComputerAction):
 class DoneAction(BaseComputerAction):
     action_type: Literal[ActionType.DONE]
 
+
+VoidAction: TypeAlias = WaitAction | FailAction | DoneAction
 
 #####################
 # Single Key Action #
@@ -100,6 +97,22 @@ class KeyUpAction(BaseComputerAction):
     key: str
 
 
+SingleKeyAction: TypeAlias = PressAction | KeyDownAction | KeyUpAction
+
+
+####################
+# Multi Key Action #
+####################
+
+
+class HotkeyAction(BaseComputerAction):
+    action_type: Literal[ActionType.HOTKEY]
+    keys: list[str]
+
+
+MultiKeyAction: TypeAlias = HotkeyAction
+
+
 ################
 # Mouse Action #
 ################
@@ -111,19 +124,24 @@ class MouseButtonType(str, Enum):
     MIDDLE = "middle"
 
 
-class _MouseAction(BaseComputerAction):
+class MouseAction(BaseComputerAction):
     button: MouseButtonType = MouseButtonType.LEFT
 
 
-class MouseDownAction(_MouseAction):
+class MouseDownAction(MouseAction):
     action_type: Literal[ActionType.MOUSE_DOWN]
 
 
-class MouseUpAction(_MouseAction):
+class MouseUpAction(MouseAction):
     action_type: Literal[ActionType.MOUSE_UP]
 
 
-class ClickAction(_MouseAction):
+################
+# Click Action #
+################
+
+
+class ClickAction(MouseAction):
     action_type: Literal[ActionType.CLICK]
     x: Optional[int] = None
     y: Optional[int] = None
@@ -142,7 +160,7 @@ class DoubleClickAction(ClickAction):
     num_clicks: int = 2
 
 
-ComputerAction = Annotated[
+Computer13 = Annotated[
     Union[
         MoveToAction,
         ClickAction,
