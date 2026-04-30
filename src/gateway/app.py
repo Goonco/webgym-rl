@@ -7,13 +7,13 @@ from contextlib import asynccontextmanager
 from typing import Annotated, Any
 
 from fastapi import Body, FastAPI
-from protocol.request import Request
-from protocol.response import ErrorResponse, ErrorResponseType, Response
-from service import WebGym
 
-from util.config import Config
-from util.log import file_logger, setup_logging
-from util.task_store import TaskStore
+from ..util.config import Config
+from ..util.log import file_logger, setup_logging
+from ..util.task_store import TaskStore
+from .protocol.request import Request
+from .protocol.response import ErrorResponse, ErrorResponseType, Response
+from .service import WebGym
 
 
 def launch(config: Config):

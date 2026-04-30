@@ -2,8 +2,7 @@ from typing import Any
 
 import requests
 
-from omnibox.omnibox import OmniboxInstance
-
+from ..omnibox.omnibox import OmniboxInstance
 from .error import OmniBoxTransportError
 
 

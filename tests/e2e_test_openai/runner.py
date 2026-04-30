@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from openai import OpenAI
+from src.util.task_store import TaskStore
 
 from tests.util import (
     ACTION_ALLOWED_FIELDS,
@@ -12,7 +13,6 @@ from tests.util import (
     decode_png_base64,
     post,
 )
-from util.task_store import TaskStore
 
 
 class Runner:

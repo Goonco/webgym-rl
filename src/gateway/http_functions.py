@@ -6,8 +6,8 @@ from typing import Any
 from PIL import Image, UnidentifiedImageError
 
 from environment.webgym.webgym.misc import is_white_image
-from omnibox.omnibox import OmniboxInstance
 
+from ..omnibox.omnibox import OmniboxInstance
 from .error import OmniboxBusyError, OmniboxInvalidScreenshotError
 from .omnibox_master_client import MasterClient
 

@@ -7,7 +7,12 @@ from typing import Dict
 from typing_extensions import assert_never
 
 from environment.webgym.webgym.environment.process_isolator import ProcessBasedHttpStack
-from gateway.http_functions import (
+
+from ..omnibox.omnibox import OmniboxInstance
+from ..util.config import HttpStackConfig, OmniboxConfig
+from ..util.task_store import TaskStore
+from .error import WebGymEnvRetryableError
+from .http_functions import (
     allocate_instance,
     execute_browser_command,
     get_interactive_tree,
@@ -16,7 +21,7 @@ from gateway.http_functions import (
     reset_instance,
     screenshot,
 )
-from gateway.protocol.computer13 import (
+from .protocol.computer13 import (
     ActionType,
     ClickAction,
     Computer13,
@@ -33,24 +38,19 @@ from gateway.protocol.computer13 import (
     TypingAction,
     WaitAction,
 )
-from gateway.protocol.request import (
+from .protocol.request import (
     ActionRequest,
     Request,
     RequestAdapter,
     RewardRequest,
     StartRequest,
 )
-from gateway.protocol.response import ActionResponse, ImagePayload, RewardResponse
-from gateway.rule_evaluator import (
+from .protocol.response import ActionResponse, ImagePayload, RewardResponse
+from .rule_evaluator import (
     collect_selectors,
     evaluate_page_rules,
     uses_page_html,
 )
-from omnibox.omnibox import OmniboxInstance
-from util.config import HttpStackConfig, OmniboxConfig
-from util.task_store import TaskStore
-
-from .error import WebGymEnvRetryableError
 
 
 class DeadlineExceeded(TimeoutError):
